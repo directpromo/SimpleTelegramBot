@@ -1,19 +1,26 @@
 <?php
-//2021.03.29.01
+//2021.03.29.02
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
 
-// ----------------------- Header ---------------------------------
+// ----------------------- System ---------------------------------
 set_error_handler('ErrorSet');
-require_once(dirname(__DIR__, 1) . '/common/php.php');
 require_once(__DIR__ . '/config.php');
 const Url = 'https://api.telegram.org/bot' . Token;
 const FilesUrl = 'https://api.telegram.org/file/bot' . Token;
+
 $temp = file_get_contents(__DIR__ . '/admins.json');
 $temp = json_decode($temp, true);
 $temp = array_merge($temp, [DebugId]);
 define('Admins', $temp);
+
+$files = scandir(__DIR__ . '/modules');
+foreach($files as $file):
+  if($file !== '.' and $file !== '..'):
+    include(__DIR__ . '/modules/' . $file);
+  endif;
+endforeach;
 
 // ------------------- System functions ---------------------------
 
@@ -23,7 +30,7 @@ function Send(int $UserId, string $Msg):void{
 
 function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $errline = null, ?array $errcontext = null):void{
   global $Server;
-  Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
+  Send(DebugId, "Error $errno in file $errfile line $errline\n$errstr\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
 }
 
