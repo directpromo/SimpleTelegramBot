@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.04
+//2021.03.29.05
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -10,7 +10,7 @@ require_once(__DIR__ . '/config.php');
 const Url = 'https://api.telegram.org/bot' . Token;
 const FilesUrl = 'https://api.telegram.org/file/bot' . Token;
 
-$temp = file_get_contents(__DIR__ . '/admins.json');
+$temp = file_get_contents(__DIR__ . '/commands/admins.json');
 $temp = json_decode($temp, true);
 $temp = array_merge($temp, [DebugId]);
 define('Admins', $temp);
