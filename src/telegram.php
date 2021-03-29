@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.03
+//2021.03.29.04
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -61,74 +61,86 @@ function IsAdmin(int $Id):bool{
 
 function Command_list():void{
   global $Server;
-  $msg = '';
-  $i = 0;
-  foreach(scandir(__DIR__) as $file):
-    if($file !== '.' and $file !== '..' and substr($file, -3) !== 'php' and $file !== 'error_log'):
-      $msg .= $file . "\n";
-      $i++;
-    endif;
-  endforeach;
-  Send($Server['message']['from']['id'], "$i files:\n" . $msg);
+  if(IsAdmin($Server['message']['from']['id'])):
+    $msg = '';
+    $i = 0;
+    foreach(scandir(__DIR__ . '/commands') as $file):
+      if($file !== '.' and $file !== '..' and substr($file, -3) !== 'php' and $file !== 'error_log'):
+        $msg .= $file . "\n";
+        $i++;
+      endif;
+    endforeach;
+    Send($Server['message']['from']['id'], "$i files:\n" . $msg);
+  endif;
 }
 
 function Command_get():void{
   global $Server;
-  $file = substr($Server['message']['text'], 5);
-  if(file_exists(__DIR__ . '/commands/' . $file)):
-    $file = file_get_contents(__DIR__ . '/commands/' . $file);
-    Send($Server['message']['from']['id'], $file);
-  else:
-    Send($Server['message']['from']['id'], 'File not found.');
+  if(IsAdmin($Server['message']['from']['id'])):
+    $file = substr($Server['message']['text'], 5);
+    if(file_exists(__DIR__ . '/commands/' . $file)):
+      $file = file_get_contents(__DIR__ . '/commands/' . $file);
+      Send($Server['message']['from']['id'], $file);
+    else:
+      Send($Server['message']['from']['id'], 'File not found.');
+    endif;
   endif;
 }
 
 function Command_set():void{
   global $Server;
-  $text = substr($Server['message']['text'], 5);
-  $pos = strpos($text, ' ');
-  $file = substr($text, 0, $pos);
-  if(substr($file, -3) !== 'php'):
-    $content = substr($text, $pos + 1);
-    file_put_contents(__DIR__ . '/commands/' . $file, $content);
-    Send($Server['message']['from']['id'], $file . ' saved.');
+  if(IsAdmin($Server['message']['from']['id'])):
+    $text = substr($Server['message']['text'], 5);
+    $pos = strpos($text, ' ');
+    $file = substr($text, 0, $pos);
+    if(substr($file, -3) !== 'php'):
+      $content = substr($text, $pos + 1);
+      file_put_contents(__DIR__ . '/commands/' . $file, $content);
+      Send($Server['message']['from']['id'], $file . ' saved.');
+    endif;
   endif;
 }
 
 function Command_del():void{
   global $Server;
-  $file = substr($Server['message']['text'], 5);
-  unlink(__DIR__ . '/commands/' . $file);
-  Send($Server['message']['from']['id'], $file . ' deleted.');
+  if(IsAdmin($Server['message']['from']['id'])):
+    $file = substr($Server['message']['text'], 5);
+    unlink(__DIR__ . '/commands/' . $file);
+    Send($Server['message']['from']['id'], $file . ' deleted.');
+  endif;
 }
 
 function Command_cmdget():void{
   global $Server;
-  $commands = file_get_contents(Url . '/getMyCommands');
-  $commands = json_decode($commands, true);
-  $msg = '';
-  foreach($commands['result'] as $command):
-    $msg .= $command['command'] . ' ' . $command['description'] . "\n";
-  endforeach;
-  Send($Server['message']['from']['id'], $msg);
+  if(IsAdmin($Server['message']['from']['id'])):
+    $commands = file_get_contents(Url . '/getMyCommands');
+    $commands = json_decode($commands, true);
+    $msg = '';
+    foreach($commands['result'] as $command):
+      $msg .= $command['command'] . ' ' . $command['description'] . "\n";
+    endforeach;
+    Send($Server['message']['from']['id'], $msg);
+  endif;
 }
 
 function Command_cmdset():void{
   global $Server;
-  $commands = [];
-  $pos = strpos($Server['message']['text'], ' ');
-  $temp = substr($Server['message']['text'], $pos + 1);
-  $temp = explode("\n", $temp);
-  foreach($temp as $command):
-    $pos = strpos($command, ' ');
-    $commands[] = [
-      'command' => substr($command, 0, $pos),
-      'description' => substr($command, $pos + 1)
-    ];
-  endforeach;
-  $temp = file_get_contents(Url . '/setMyCommands?commands=' . json_encode($commands));
-  //Send(DebugId, $temp);
-  Send($Server['message']['from']['id'], 'Commands updated.');
+  if(IsAdmin($Server['message']['from']['id'])):
+    $commands = [];
+    $pos = strpos($Server['message']['text'], ' ');
+    $temp = substr($Server['message']['text'], $pos + 1);
+    $temp = explode("\n", $temp);
+    foreach($temp as $command):
+      $pos = strpos($command, ' ');
+      $commands[] = [
+        'command' => substr($command, 0, $pos),
+        'description' => substr($command, $pos + 1)
+      ];
+    endforeach;
+    $temp = file_get_contents(Url . '/setMyCommands?commands=' . json_encode($commands));
+    //Send(DebugId, $temp);
+    Send($Server['message']['from']['id'], 'Commands updated.');
+  endif;
 }
 
 // ------------------------ Actions -------------------------------
@@ -148,20 +160,16 @@ function Action_():void{
     $Texto = strtolower($Server['message']['text']);
     if(substr($Texto, 0, 1) === '/'):
       $command = substr($Texto, 1);
+      $pos = strpos($command, ' ');
+      if($pos !== false):
+        $command = substr($command, 0, $pos);
+      endif;
       if(file_exists(__DIR__ . '/commands/' . $command . '.txt')):
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
         $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
         Send($Server['message']['from']['id'], $temp);
-      elseif(IsAdmin($Server['message']['from']['id'])):
-        $pos = strpos($command, ' ');
-        if($pos > 0):
-          $command = substr($command, 0, $pos);
-        endif;
-        if(function_exists('Command_' . $command)):
-          call_user_func('Command_' . $command);
-        else:
-          Send($Server['message']['from']['id'], 'Command not found.');
-        endif;
+      elseif(function_exists('Command_' . $command)):
+        call_user_func('Command_' . $command);
       else:
         Unknow();
       endif;
