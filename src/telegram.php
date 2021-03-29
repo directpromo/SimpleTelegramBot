@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.02
+//2021.03.29.03
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -47,6 +47,14 @@ function DownloadFile():void{
   $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
   file_put_contents(__DIR__ . '/' . $Server['message']['document']['file_name'], $content);
   Send($Server['message']['from']['id'], 'File saved.');
+}
+
+function IsAdmin(int $Id):bool{
+  if(array_search($Id, Admins) === false):
+    return false;
+  else:
+    return true;
+  endif;
 }
 
 // ----------------------- Commands -------------------------------
@@ -144,7 +152,7 @@ function Action_():void{
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
         $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
         Send($Server['message']['from']['id'], $temp);
-      elseif(array_search($Server['message']['from']['id'], Admins) !== false):
+      elseif(IsAdmin($Server['message']['from']['id'])):
         $pos = strpos($command, ' ');
         if($pos > 0):
           $command = substr($command, 0, $pos);
