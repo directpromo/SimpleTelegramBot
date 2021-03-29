@@ -12,17 +12,23 @@ This commands are use in the Telegram chat with your bot.
 To use them, put your ID in the "DebugId" constant, or in "admins.json" file (JSON format).
 To get your ID, send a message to bot saying "my id".
 
-**list** Lits files in the directory
+### /list
+List files in the directory
 
-**get** Get the file content (/get start.txt)
+### /get
+Get the file content (/get start.txt)
 
-**set** Create or edit a file (/set start.txt Hi everybody!)
+### /set
+Create or edit a file (/set start.txt Hi everybody!)
 
-**del** Delete a file (/del start.txt)
+### /del
+Delete a file (/del start.txt)
 
-**cmdget** Get the commands list
+### /cmdget
+Get the commands list
 
-**cmdset** Set the new commands (/cmdset cmd1 Do the thing 1)
+### /cmdset
+Set the new commands (/cmdset cmd1 Do the thing 1)
 
 
 ## Simple guide to install this bot:
