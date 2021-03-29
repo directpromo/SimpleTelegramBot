@@ -34,7 +34,7 @@ Set the new commands (/cmdset cmd1 Do the thing 1)
 ## Simple guide to install this bot:
 
 1) Get a bot API (if you dont have yet) with @botfather in Telegram;
-2) Put this token in "Token" constant in the code;
-3) Rename the telegram.php file with a random name, to avoid attacks. The Telegram API manual sugest to use the token.
+2) Put this token in config file;
+3) Rename the telegram.php with a random name, to avoid attacks. The Telegram API manual sugest to use the token.
 4) Register the WebHook acessing you file in the web with parameter "?a=HookSet" (https://yoursite.com/telegram_fcgb8fg8aba8g.php?a=HookSet)
 5) Done.
