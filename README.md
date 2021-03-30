@@ -5,6 +5,9 @@ This bot just anwser  the commands with the txt file contents.
 ## Dependencies
 
 This bot use the Webhook tecnology. A web server with HTTPS URL are required.
+- PHP > 7.4;
+- OpenSSL extension;
+- Curl extension;
 
 ## Commands
 
