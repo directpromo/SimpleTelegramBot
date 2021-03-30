@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.06
+//2021.03.30.07
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -47,8 +47,13 @@ function LogEvent(string $Event):void{
   file_put_contents(__DIR__ . '/usage.log', date('Y-m-d H:i:s') . "\t" . $Server['message']['from']['id'] . ' ' . $Server['message']['from']['first_name'] . "\t" . $Event . "\n", FILE_APPEND);
 }
 
-function Send(int $UserId, string $Msg):void{
-  file_get_contents(Url . '/sendMessage?chat_id=' . $UserId . '&text=' . urlencode($Msg) . '&parse_mode=HTML');
+function Send(int $UserId, string $Msg, ?array $Markup = null):array{
+  $temp = Url . '/sendMessage?chat_id=' . $UserId . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
+  if($Markup !== null):
+    $temp .= '&reply_markup=' . urlencode(json_encode($Markup));
+  endif;
+  $temp = file_get_contents($temp);
+  return json_decode($temp, true);
 }
 
 function SendPhoto(int $UserId, string $File):void{
