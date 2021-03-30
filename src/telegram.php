@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.06
+//2021.03.29.07
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -45,6 +45,7 @@ function SendPhoto(int $UserId, string $File):void{
     'photo' => new CurlFile($File)
   ]);
   curl_setopt($curl, CURLOPT_INFILESIZE, filesize($File));
+  curl_exec($curl);
 }
 
 function Unknow():void{
