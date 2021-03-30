@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.02
+//2021.03.30.03
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -14,6 +14,10 @@ $temp = file_get_contents(__DIR__ . '/commands/admins.json');
 $temp = json_decode($temp, true);
 $temp = array_merge($temp, [DebugId]);
 define('Admins', $temp);
+
+$Bot = file_get_contents(Url . '/getMe');
+$Bot = json_decode($Bot, true);
+define('Bot', $Bot['result']);
 
 $files = scandir(__DIR__ . '/modules');
 foreach($files as $file):
@@ -170,15 +174,19 @@ function Action_HookSet():void{
 }
 
 function Action_():void{
-  global $Server;
+  global $Server, $Bot;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(isset($Server['message']['document']) and array_search($Server['message']['from']['id'], Admins) !== false):
     DownloadFile();
   else:
-    $Texto = strtolower($Server['message']['text']);
-    if(substr($Texto, 0, 1) === '/'):
-      $command = substr($Texto, 1);
+    $count = strlen(Bot['username']) + 1;
+    if($Server['message']['chat']['type'] === 'group' and substr($Server['message']['text'], -$count) === ('@' . Bot['username'])):
+      $Text = substr($Server['message']['text'], 0, -$count);
+    endif;
+    $Text = strtolower($Text);
+    if(substr($Text, 0, 1) === '/'):
+      $command = substr($Text, 1);
       $pos = strpos($command, ' ');
       if($pos !== false):
         $command = substr($command, 0, $pos);
@@ -187,9 +195,9 @@ function Action_():void{
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
         $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
         LogEvent($command);
-        Send($Server['message']['from']['id'], $temp);
+        Send($Server['message']['chat']['id'], $temp);
         if(file_exists(__DIR__ . '/commands/' . $command . '.png')):
-          SendPhoto($Server['message']['from']['id'], __DIR__ . '/commands/' . $command . '.png');
+          SendPhoto($Server['message']['chat']['id'], __DIR__ . '/commands/' . $command . '.png');
         endif;
       elseif(function_exists('Command_' . $command)):
         LogEvent($command);
@@ -198,7 +206,7 @@ function Action_():void{
         LogEvent('unknow');
         Unknow();
       endif;
-    elseif($Texto === 'my id'):
+    elseif($Text === 'my id'):
       LogEvent('MyId');
       Send($Server['message']['from']['id'], 'Your ID is ' . $Server['message']['from']['id']);
     else:
