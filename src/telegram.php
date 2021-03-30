@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.00
+//2021.03.30.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -40,7 +40,7 @@ function IsAdmin(int $Id):bool{
 
 function LogEvent(string $Event):void{
   global $Server;
-  file_put_contents(__DIR__ . '/usage.log', date('Y-m-d H:i:s') . "\t" . $Server['message']['from']['id'] . "\t" . $Event . "\n", FILE_APPEND);
+  file_put_contents(__DIR__ . '/usage.log', date('Y-m-d H:i:s') . "\t" . $Server['message']['from']['id'] . ' ' . $Server['message']['from']['username'] . "\t" . $Event . "\n", FILE_APPEND);
 }
 
 function Send(int $UserId, string $Msg):void{
