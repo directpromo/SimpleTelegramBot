@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.07
+//2021.03.30.08
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -186,8 +186,9 @@ function Action_():void{
     DownloadFile();
   elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
+    $Text = $Server['message']['text'];
     if($Server['message']['chat']['type'] === 'group' and substr($Server['message']['text'], -$count) === ('@' . Bot['username'])):
-      $Text = substr($Server['message']['text'], 0, -$count);
+      $Text = substr($Text, 0, -$count);
     endif;
     $Text = strtolower($Text);
     if(substr($Text, 0, 1) === '/'):
