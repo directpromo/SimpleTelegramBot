@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.04
+//2021.03.30.05
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -179,7 +179,7 @@ function Action_():void{
   $Server = json_decode($Server, true);
   if(isset($Server['message']['document']) and array_search($Server['message']['from']['id'], Admins) !== false):
     DownloadFile();
-  else:
+  elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
     if($Server['message']['chat']['type'] === 'group' and substr($Server['message']['text'], -$count) === ('@' . Bot['username'])):
       $Text = substr($Server['message']['text'], 0, -$count);
