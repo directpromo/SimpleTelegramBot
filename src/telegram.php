@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.05
+//2021.03.29.06
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -24,14 +24,27 @@ endforeach;
 
 // ------------------- System functions ---------------------------
 
-function Send(int $UserId, string $Msg):void{
-  file_get_contents(Url . '/sendMessage?chat_id=' . $UserId . '&text=' . urlencode($Msg) . '&parse_mode=HTML');
-}
-
 function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $errline = null, ?array $errcontext = null):void{
   global $Server;
   Send(DebugId, "Error $errno in file $errfile line $errline\n$errstr\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
+}
+
+function Send(int $UserId, string $Msg):void{
+  file_get_contents(Url . '/sendMessage?chat_id=' . $UserId . '&text=' . urlencode($Msg) . '&parse_mode=HTML');
+}
+
+function SendPhoto(int $UserId, string $File):void{
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type:multipart/form-data']);
+  curl_setopt($curl, CURLOPT_URL, Url . '/sendPhoto');
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_POST, true);
+  curl_setopt($curl, CURLOPT_POSTFIELDS, [
+    'chat_id' => $UserId,
+    'photo' => new CurlFile($File)
+  ]);
+  curl_setopt($curl, CURLOPT_INFILESIZE, filesize($File));
 }
 
 function Unknow():void{
@@ -168,6 +181,9 @@ function Action_():void{
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
         $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
         Send($Server['message']['from']['id'], $temp);
+        if(file_exists(__DIR__ . '/commands/' . $command . '.png')):
+          SendPhoto($Server['message']['from']['id'], __DIR__ . '/commands/' . $command . '.png');
+        endif;
       elseif(function_exists('Command_' . $command)):
         call_user_func('Command_' . $command);
       else:
