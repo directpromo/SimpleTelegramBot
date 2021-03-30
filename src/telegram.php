@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.03
+//2021.03.30.04
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -67,8 +67,8 @@ function SendPhoto(int $UserId, string $File):void{
 
 function Unknow():void{
   global $Server;
-  Send($Server['message']['from']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
-  Send(DebugId, json_encode($Server, JSON_PRETTY_PRINT));
+  Send($Server['message']['chat']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
+  Send(DebugId, "Unknow message sent:\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
 function DownloadFile():void{
