@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.05
+//2021.03.30.06
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -15,12 +15,12 @@ $temp = json_decode($temp, true);
 $temp = array_merge($temp, [DebugId]);
 define('Admins', $temp);
 
-$Bot = file_get_contents(Url . '/getMe');
-$Bot = json_decode($Bot, true);
-define('Bot', $Bot['result']);
+$temp = file_get_contents(Url . '/getMe');
+$temp = json_decode($temp, true);
+define('Bot', $temp['result']);
 
-$files = scandir(__DIR__ . '/modules');
-foreach($files as $file):
+$temp = scandir(__DIR__ . '/modules');
+foreach($temp as $file):
   if($file !== '.' and $file !== '..' and is_dir(__DIR__ . '/modules/' . $file) === false):
     include(__DIR__ . '/modules/' . $file);
   endif;
@@ -177,7 +177,7 @@ function Action_():void{
   global $Server, $Bot;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
-  if(isset($Server['message']['document']) and array_search($Server['message']['from']['id'], Admins) !== false):
+  if(isset($Server['message']['document']) and IsAdmin($Server['message']['from']['id'])):
     DownloadFile();
   elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
