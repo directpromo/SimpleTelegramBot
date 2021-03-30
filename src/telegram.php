@@ -1,5 +1,5 @@
 <?php
-//2021.03.29.07
+//2021.03.30.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -17,7 +17,7 @@ define('Admins', $temp);
 
 $files = scandir(__DIR__ . '/modules');
 foreach($files as $file):
-  if($file !== '.' and $file !== '..'):
+  if($file !== '.' and $file !== '..' and is_dir(__DIR__ . '/modules/' . $file) === false):
     include(__DIR__ . '/modules/' . $file);
   endif;
 endforeach;
@@ -28,6 +28,19 @@ function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $err
   global $Server;
   Send(DebugId, "Error $errno in file $errfile line $errline\n$errstr\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
+}
+
+function IsAdmin(int $Id):bool{
+  if(array_search($Id, Admins) === false):
+    return false;
+  else:
+    return true;
+  endif;
+}
+
+function LogEvent(string $Event):void{
+  global $Server;
+  file_put_contents(__DIR__ . '/usage.log', date('Y-m-d H:i:s') . "\t" . $Server['message']['from']['id'] . "\t" . $Event . "\n", FILE_APPEND);
 }
 
 function Send(int $UserId, string $Msg):void{
@@ -61,14 +74,6 @@ function DownloadFile():void{
   $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
   file_put_contents(__DIR__ . '/' . $Server['message']['document']['file_name'], $content);
   Send($Server['message']['from']['id'], 'File saved.');
-}
-
-function IsAdmin(int $Id):bool{
-  if(array_search($Id, Admins) === false):
-    return false;
-  else:
-    return true;
-  endif;
 }
 
 // ----------------------- Commands -------------------------------
@@ -181,18 +186,23 @@ function Action_():void{
       if(file_exists(__DIR__ . '/commands/' . $command . '.txt')):
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
         $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
+        LogEvent($command);
         Send($Server['message']['from']['id'], $temp);
         if(file_exists(__DIR__ . '/commands/' . $command . '.png')):
           SendPhoto($Server['message']['from']['id'], __DIR__ . '/commands/' . $command . '.png');
         endif;
       elseif(function_exists('Command_' . $command)):
+        LogEvent($command);
         call_user_func('Command_' . $command);
       else:
+        LogEvent('unknow');
         Unknow();
       endif;
     elseif($Texto === 'my id'):
+      LogEvent('MyId');
       Send($Server['message']['from']['id'], 'Your ID is ' . $Server['message']['from']['id']);
     else:
+      LogEvent('unknow');
       Unknow();
     endif;
   endif;
