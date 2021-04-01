@@ -1,5 +1,5 @@
 <?php
-//2021.03.31.00
+//2021.03.31.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -183,7 +183,7 @@ function Action_():void{
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(isset($Server['message']['document']) and IsAdmin($Server['message']['from']['id'])):
-    DownloadFile(__DIR__ . '/commands/');
+    DownloadFile(__DIR__ . '/commands');
   elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
     $Text = $Server['message']['text'];
