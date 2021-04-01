@@ -1,5 +1,5 @@
 <?php
-//2021.03.30.08
+//2021.03.31.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -76,12 +76,12 @@ function Unknow():void{
   Send(DebugId, "Unknow message sent:\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
-function DownloadFile():void{
+function DownloadFile(string $Folder):void{
   global $Server;
   $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
   $file = json_decode($file, true);
   $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
-  file_put_contents(__DIR__ . '/' . $Server['message']['document']['file_name'], $content);
+  file_put_contents($Folder . '/' . $Server['message']['document']['file_name'], $content);
   Send($Server['message']['from']['id'], 'File saved.');
 }
 
@@ -183,7 +183,7 @@ function Action_():void{
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(isset($Server['message']['document']) and IsAdmin($Server['message']['from']['id'])):
-    DownloadFile();
+    DownloadFile(__DIR__ . '/commands/');
   elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
     $Text = $Server['message']['text'];
@@ -216,7 +216,7 @@ function Action_():void{
       LogEvent('MyId');
       Send($Server['message']['from']['id'], 'Your ID is ' . $Server['message']['from']['id']);
     else:
-      LogEvent('unknow');
+      LogEvent('Unknow');
       Unknow();
     endif;
   endif;
