@@ -1,5 +1,5 @@
 <?php
-//2021.03.31.01
+//2021.04.01.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -76,13 +76,20 @@ function Unknow():void{
   Send(DebugId, "Unknow message sent:\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
-function DownloadFile(string $Folder):void{
+function DownloadFile(string $Folder):bool{
   global $Server;
-  $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
-  $file = json_decode($file, true);
-  $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
-  file_put_contents($Folder . '/' . $Server['message']['document']['file_name'], $content);
-  Send($Server['message']['from']['id'], 'File saved.');
+  if(isset($Server['message']['document'])):
+    $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
+    $file = json_decode($file, true);
+    $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
+    file_put_contents($Folder . '/' . $Server['message']['document']['file_name'], $content);
+  elseif(isset($Server['message']['photo'])):
+    $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['photo'][1]['file_id']);
+    $file = json_decode($file, true);
+    $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
+    file_put_contents($Folder . '/' . date('s') . '.png', $content);
+  endif;
+  return true;
 }
 
 // ----------------------- Commands -------------------------------
@@ -182,8 +189,10 @@ function Action_():void{
   global $Server, $Bot;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
-  if(isset($Server['message']['document']) and IsAdmin($Server['message']['from']['id'])):
-    DownloadFile(__DIR__ . '/commands');
+  if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
+    if(DownloadFile(__DIR__ . '/commands') === true):
+      Send($Server['message']['from']['id'], 'File saved.');
+    endif;
   elseif(isset($Server['message'])):
     $count = strlen(Bot['username']) + 1;
     $Text = $Server['message']['text'];
