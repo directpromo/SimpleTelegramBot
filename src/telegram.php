@@ -1,5 +1,5 @@
 <?php
-//2021.04.01.00
+//2021.04.02.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -76,7 +76,7 @@ function Unknow():void{
   Send(DebugId, "Unknow message sent:\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
-function DownloadFile(string $Folder):bool{
+function DownloadFile(string $Folder = __DIR__ . '/commands'):bool{
   global $Server;
   if(isset($Server['message']['document'])):
     $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
@@ -190,7 +190,7 @@ function Action_():void{
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
-    if(DownloadFile(__DIR__ . '/commands') === true):
+    if(DownloadFile() === true):
       Send($Server['message']['from']['id'], 'File saved.');
     endif;
   elseif(isset($Server['message'])):
