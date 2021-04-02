@@ -1,5 +1,5 @@
 <?php
-//2021.04.02.00
+//2021.04.02.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -142,6 +142,16 @@ function Command_del():void{
     $file = substr($Server['message']['text'], 5);
     unlink(__DIR__ . '/commands/' . $file);
     Send($Server['message']['from']['id'], $file . ' deleted.');
+  endif;
+}
+
+function Command_ren():void{
+  global $Server;
+  if(IsAdmin($Server['message']['from']['id'])):
+    $file = substr($Server['message']['text'], 5);
+    $file = explode(' ', $file);
+    rename(__DIR__ . '/commands/' . $file[0], __DIR__ . '/commands/' . $file[1]);
+    Send($Server['message']['from']['id'], $file . ' renamed.');
   endif;
 }
 
