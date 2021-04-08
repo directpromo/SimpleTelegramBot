@@ -1,5 +1,5 @@
 <?php
-//2021.04.02.01
+//2021.04.08.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -30,7 +30,7 @@ endforeach;
 
 function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $errline = null, ?array $errcontext = null):void{
   global $Server;
-  Send(DebugId, "Error $errno in file $errfile line $errline\n$errstr\n" . json_encode($Server, JSON_PRETTY_PRINT));
+  Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
 }
 
@@ -196,7 +196,7 @@ function Action_HookSet():void{
 }
 
 function Action_():void{
-  global $Server, $Bot;
+  global $Server;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
