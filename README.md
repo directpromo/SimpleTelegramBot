@@ -27,12 +27,14 @@ Create or edit a file (/set start.txt Hi everybody!)
 ### /del
 Delete a file (/del start.txt)
 
+### /ren
+Rename a file (/ren 10.png start.png)
+
 ### /cmdget
 Get the commands list
 
 ### /cmdset
 Set the new commands (/cmdset cmd1 Do the thing 1)
-
 
 ## Simple guide to install this bot:
 
