@@ -1,12 +1,12 @@
 <?php
-//2021.04.09.02
+//2021.04.09.03
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
 
 // ----------------------- System ---------------------------------
 set_error_handler('ErrorSet');
-require_once(__DIR__ . '/config.php');
+require(__DIR__ . '/config.php');
 const Url = 'https://api.telegram.org/bot' . Token;
 const FilesUrl = 'https://api.telegram.org/file/bot' . Token;
 
@@ -34,6 +34,24 @@ function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $err
   global $Server;
   Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
+}
+
+function AccentInsensitive(string $Text):string{
+  return strtr(
+    $Text,
+    ['ã'],
+    ['a']
+  );
+}
+
+function Equals(string $Text1, string $Text2):bool{
+  $Text1 = AccentInsensitive($Text1);
+  $Text2 = AccentInsensitive($Text2);
+  if(strcasecmp($Text1, $Text2) === 0):
+    return true;
+  else:
+    return false;
+  endif;
 }
 
 function IsAdmin(int $Id):bool{
@@ -72,13 +90,7 @@ function SendPhoto(int $UserId, string $File):void{
   curl_exec($curl);
 }
 
-function Unknow():void{
-  global $Server;
-  Send($Server['message']['chat']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
-  Send(DebugId, sprintf(LangUnknowSent, json_encode($Server, JSON_PRETTY_PRINT)));
-}
-
-function DownloadFile(string $Folder = __DIR__ . '/commands'):string{
+function DownloadFile(string $Folder):string{
   global $Server;
   if(isset($Server['message']['document'])):
     $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
@@ -94,6 +106,13 @@ function DownloadFile(string $Folder = __DIR__ . '/commands'):string{
     file_put_contents($Folder . '/' . $file, $content);
   endif;
   return $file;
+}
+
+function Unknow():void{
+  global $Server;
+  LogEvent('Unknow');
+  Send($Server['message']['from']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
+  Send(DebugId, LangUnknow . "\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
 // ----------------------- Commands -------------------------------
@@ -203,43 +222,42 @@ function Action_():void{
   global $Server;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
-  if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
-    $file = DownloadFile();
-    Send($Server['message']['from']['id'], sprintf(LangFileSaved, $file));
-  elseif(isset($Server['message']['text'])):
-    $count = strlen(Bot['username']) + 1;
-    $Text = $Server['message']['text'];
-    if($Server['message']['chat']['type'] === 'group' and substr($Server['message']['text'], -$count) === ('@' . Bot['username'])):
-      $Text = substr($Text, 0, -$count);
-    endif;
-    $Text = strtolower($Text);
-    if(substr($Text, 0, 1) === '/'):
-      $command = substr($Text, 1);
-      $pos = strpos($command, ' ');
-      if($pos !== false):
-        $command = substr($command, 0, $pos);
+  if(isset($Server['message'])):
+    if((isset($Server['message']['document']) or isset($Server['message']['photo'])) and IsAdmin($Server['message']['from']['id'])):
+      $file = DownloadFile(__DIR__ . '/commands');
+      Send($Server['message']['from']['id'], sprintf(LangFileSaved, $file));
+    else:
+      $count = strlen(Bot['username']) + 1;
+      $Text = $Server['message']['text'];
+      if($Server['message']['chat']['type'] === 'group' and substr($Text, -$count) === ('@' . Bot['username'])):
+        $Text = substr($Text, 0, -$count);
       endif;
-      if(file_exists(__DIR__ . '/commands/' . $command . '.txt')):
-        $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
-        $temp = str_replace('##NAME##', $Server['message']['from']['first_name'], $temp);
-        LogEvent($command);
-        Send($Server['message']['chat']['id'], $temp);
-        if(file_exists(__DIR__ . '/commands/' . $command . '.png')):
-          SendPhoto($Server['message']['chat']['id'], __DIR__ . '/commands/' . $command . '.png');
+      if(substr($Text, 0, 1) === '/'):
+        $command = strtolower(substr($Text, 1));
+        $pos = strpos($command, ' ');
+        if($pos !== false):
+          $command = substr($command, 0, $pos);
         endif;
-      elseif(function_exists('Command_' . $command)):
-        LogEvent($command);
-        call_user_func('Command_' . $command);
+        if(file_exists(__DIR__ . '/commands/' . $command . '.txt')):
+          $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
+          $temp = str_replace('##NAME##', $Server['message']['from']['first_name'], $temp);
+          LogEvent($command);
+          Send($Server['message']['chat']['id'], $temp);
+          if(file_exists(__DIR__ . '/commands/' . $command . '.png')):
+            SendPhoto($Server['message']['chat']['id'], __DIR__ . '/commands/' . $command . '.png');
+          endif;
+        elseif(function_exists('Command_' . $command)):
+          LogEvent($command);
+          call_user_func('Command_' . $command);
+        endif;
+      elseif(Equals($Text, LangMyId)):
+        LogEvent('MyId');
+        Send($Server['message']['from']['id'], sprintf(LangYourId, $Server['message']['from']['id']));
+      elseif(FlowEnable):
+        require(__DIR__ . '/flow.php');
       else:
-        LogEvent('unknow');
         Unknow();
       endif;
-    elseif($Text === 'my id'):
-      LogEvent('MyId');
-      Send($Server['message']['from']['id'], LangYourId . $Server['message']['from']['id']);
-    else:
-      LogEvent('Unknow');
-      Unknow();
     endif;
   endif;
 }

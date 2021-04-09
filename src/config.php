@@ -6,3 +6,6 @@ const DebugId = '';
 
 //Language to use
 const DefaultLanguage = 'us';
+
+//Enable chat flow with attendants
+const FlowEnable = true;
