@@ -12,7 +12,7 @@ This bot use the Webhook tecnology. A web server with HTTPS URL are required.
 ## Commands
 
 This commands are use in the Telegram chat with your bot.
-To use them, put your ID in the "DebugId" constant, or in "admins.json" file (JSON format).
+To use them, put your ID in the "admins.json" file (JSON format).
 To get your ID, send a message to bot saying "my id".
 
 ### /list
