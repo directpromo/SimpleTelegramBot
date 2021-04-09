@@ -75,7 +75,7 @@ function SendPhoto(int $UserId, string $File):void{
 function Unknow():void{
   global $Server;
   Send($Server['message']['chat']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
-  Send(DebugId, printf(LangUnknowSent, json_encode($Server, JSON_PRETTY_PRINT)));
+  Send(DebugId, sprintf(LangUnknowSent, json_encode($Server, JSON_PRETTY_PRINT)));
 }
 
 function DownloadFile(string $Folder = __DIR__ . '/commands'):bool{
@@ -133,7 +133,7 @@ function Command_set():void{
     if(substr($file, -3) !== 'php'):
       $content = substr($text, $pos + 1);
       file_put_contents(__DIR__ . '/commands/' . $file, $content);
-      Send($Server['message']['from']['id'], printf(LangSaved, $file));
+      Send($Server['message']['from']['id'], sprintf(LangSaved, $file));
     endif;
   endif;
 }
@@ -143,7 +143,7 @@ function Command_del():void{
   if(IsAdmin($Server['message']['from']['id'])):
     $file = substr($Server['message']['text'], 5);
     unlink(__DIR__ . '/commands/' . $file);
-    Send($Server['message']['from']['id'], printf(LangDeleted, $file));
+    Send($Server['message']['from']['id'], sprintf(LangDeleted, $file));
   endif;
 }
 
@@ -153,7 +153,7 @@ function Command_ren():void{
     $file = substr($Server['message']['text'], 5);
     $file = explode(' ', $file);
     rename(__DIR__ . '/commands/' . $file[0], __DIR__ . '/commands/' . $file[1]);
-    Send($Server['message']['from']['id'], printf(LangRenamed, $file[0]));
+    Send($Server['message']['from']['id'], sprintf(LangRenamed, $file[0]));
   endif;
 }
 
