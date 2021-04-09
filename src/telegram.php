@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.00
+//2021.04.09.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -78,20 +78,22 @@ function Unknow():void{
   Send(DebugId, sprintf(LangUnknowSent, json_encode($Server, JSON_PRETTY_PRINT)));
 }
 
-function DownloadFile(string $Folder = __DIR__ . '/commands'):bool{
+function DownloadFile(string $Folder = __DIR__ . '/commands'):string{
   global $Server;
   if(isset($Server['message']['document'])):
     $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['document']['file_id']);
     $file = json_decode($file, true);
     $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
     file_put_contents($Folder . '/' . $Server['message']['document']['file_name'], $content);
+    $file = $Server['message']['document']['file_name'];
   elseif(isset($Server['message']['photo'])):
     $file = file_get_contents(Url . '/getFile?file_id=' . $Server['message']['photo'][1]['file_id']);
     $file = json_decode($file, true);
     $content = file_get_contents(FilesUrl . '/' . $file['result']['file_path']);
-    file_put_contents($Folder . '/' . date('s') . '.png', $content);
+    $file = date('s') . '.png';
+    file_put_contents($Folder . '/' . $file, $content);
   endif;
-  return true;
+  return $file;
 }
 
 // ----------------------- Commands -------------------------------
@@ -119,7 +121,7 @@ function Command_get():void{
       $file = file_get_contents(__DIR__ . '/commands/' . $file);
       Send($Server['message']['from']['id'], $file);
     else:
-      Send($Server['message']['from']['id'], LangFileNotFound);
+      Send($Server['message']['from']['id'], sprintf(LangFileNotFound, $file));
     endif;
   endif;
 }
@@ -202,9 +204,8 @@ function Action_():void{
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
   if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
-    if(DownloadFile() === true):
-      Send($Server['message']['from']['id'], LangFileSaved);
-    endif;
+    $file = DownloadFile();
+    Send($Server['message']['from']['id'], sprintf(LangFileSaved, $file));
   elseif(isset($Server['message']['text'])):
     $count = strlen(Bot['username']) + 1;
     $Text = $Server['message']['text'];
