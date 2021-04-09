@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.01
+//2021.04.09.02
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -221,7 +221,7 @@ function Action_():void{
       endif;
       if(file_exists(__DIR__ . '/commands/' . $command . '.txt')):
         $temp = file_get_contents(__DIR__ . '/commands/' . $command . '.txt');
-        $temp = str_replace('##NOME##', $Server['message']['from']['first_name'], $temp);
+        $temp = str_replace('##NAME##', $Server['message']['from']['first_name'], $temp);
         LogEvent($command);
         Send($Server['message']['chat']['id'], $temp);
         if(file_exists(__DIR__ . '/commands/' . $command . '.png')):

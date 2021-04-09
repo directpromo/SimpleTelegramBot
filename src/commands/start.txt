@@ -1,0 +1,2 @@
+Hello ##NAME## 👋
+See all commands in the /, right side where you write.
