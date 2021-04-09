@@ -1,5 +1,5 @@
 <?php
-//2021.04.08.00
+//2021.04.09.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -14,6 +14,8 @@ $temp = file_get_contents(__DIR__ . '/commands/admins.json');
 $temp = json_decode($temp, true);
 $temp = array_merge($temp, [DebugId]);
 define('Admins', $temp);
+
+require(__DIR__ . '/language/' . DefaultLanguage . '.php');
 
 $temp = file_get_contents(Url . '/getMe');
 $temp = json_decode($temp, true);
@@ -73,7 +75,7 @@ function SendPhoto(int $UserId, string $File):void{
 function Unknow():void{
   global $Server;
   Send($Server['message']['chat']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
-  Send(DebugId, "Unknow message sent:\n" . json_encode($Server, JSON_PRETTY_PRINT));
+  Send(DebugId, printf(LangUnknowSent, json_encode($Server, JSON_PRETTY_PRINT)));
 }
 
 function DownloadFile(string $Folder = __DIR__ . '/commands'):bool{
@@ -117,7 +119,7 @@ function Command_get():void{
       $file = file_get_contents(__DIR__ . '/commands/' . $file);
       Send($Server['message']['from']['id'], $file);
     else:
-      Send($Server['message']['from']['id'], 'File not found.');
+      Send($Server['message']['from']['id'], LangFileNotFound);
     endif;
   endif;
 }
@@ -131,7 +133,7 @@ function Command_set():void{
     if(substr($file, -3) !== 'php'):
       $content = substr($text, $pos + 1);
       file_put_contents(__DIR__ . '/commands/' . $file, $content);
-      Send($Server['message']['from']['id'], $file . ' saved.');
+      Send($Server['message']['from']['id'], printf(LangSaved, $file));
     endif;
   endif;
 }
@@ -141,7 +143,7 @@ function Command_del():void{
   if(IsAdmin($Server['message']['from']['id'])):
     $file = substr($Server['message']['text'], 5);
     unlink(__DIR__ . '/commands/' . $file);
-    Send($Server['message']['from']['id'], $file . ' deleted.');
+    Send($Server['message']['from']['id'], printf(LangDeleted, $file));
   endif;
 }
 
@@ -151,7 +153,7 @@ function Command_ren():void{
     $file = substr($Server['message']['text'], 5);
     $file = explode(' ', $file);
     rename(__DIR__ . '/commands/' . $file[0], __DIR__ . '/commands/' . $file[1]);
-    Send($Server['message']['from']['id'], $file . ' renamed.');
+    Send($Server['message']['from']['id'], printf(LangRenamed, $file[0]));
   endif;
 }
 
@@ -184,7 +186,7 @@ function Command_cmdset():void{
     endforeach;
     $temp = file_get_contents(Url . '/setMyCommands?commands=' . json_encode($commands));
     //Send(DebugId, $temp);
-    Send($Server['message']['from']['id'], 'Commands updated.');
+    Send($Server['message']['from']['id'], LangCommUpdate);
   endif;
 }
 
@@ -201,9 +203,9 @@ function Action_():void{
   $Server = json_decode($Server, true);
   if(IsAdmin($Server['message']['from']['id']) and (isset($Server['message']['document']) or isset($Server['message']['photo']))):
     if(DownloadFile() === true):
-      Send($Server['message']['from']['id'], 'File saved.');
+      Send($Server['message']['from']['id'], LangFileSaved);
     endif;
-  elseif(isset($Server['message'])):
+  elseif(isset($Server['message']['text'])):
     $count = strlen(Bot['username']) + 1;
     $Text = $Server['message']['text'];
     if($Server['message']['chat']['type'] === 'group' and substr($Server['message']['text'], -$count) === ('@' . Bot['username'])):
@@ -233,7 +235,7 @@ function Action_():void{
       endif;
     elseif($Text === 'my id'):
       LogEvent('MyId');
-      Send($Server['message']['from']['id'], 'Your ID is ' . $Server['message']['from']['id']);
+      Send($Server['message']['from']['id'], LangYourId . $Server['message']['from']['id']);
     else:
       LogEvent('Unknow');
       Unknow();
