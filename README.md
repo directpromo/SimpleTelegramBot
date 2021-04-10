@@ -54,4 +54,4 @@ Rename a file (Eg: /ren 10.png start.png)
 Get the commands list
 
 ### /cmdset
-Set the new commands (Eg: /cmdset cmd1 Do the thing 1)
+Set the commands, separated with new line (Eg: /cmdset cmd1 Do the thing 1)
