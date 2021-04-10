@@ -1,11 +1,11 @@
 <?php
-//2021.04.10.00
+//2021.04.10.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
-
 // ----------------------- System ---------------------------------
 set_error_handler('ErrorSet');
+require(__DIR__ . '/basics.php');
 require(__DIR__ . '/config.php');
 const Url = 'https://api.telegram.org/bot' . Token;
 const FilesUrl = 'https://api.telegram.org/file/bot' . Token;
@@ -34,23 +34,6 @@ function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $err
   global $Server;
   Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
   die();
-}
-
-function AccentInsensitive(string $Text):string{
-  return strtr(
-    $Text,
-    ['ã' => 'a']
-  );
-}
-
-function Equals(string $Text1, string $Text2):bool{
-  $Text1 = AccentInsensitive($Text1);
-  $Text2 = AccentInsensitive($Text2);
-  if(strcasecmp($Text1, $Text2) === 0):
-    return true;
-  else:
-    return false;
-  endif;
 }
 
 function IsAdmin(int $Id):bool{
