@@ -39,19 +39,19 @@ To get your ID, send a message to bot saying "my id".
 List files in the directory
 
 ### /get
-Get the file content (/get start.txt)
+Get the file content (Eg: /get start.txt)
 
 ### /set
-Create or edit a file (/set start.txt Hi everybody!)
+Create or edit a file (Eg: /set start.txt Hi everybody!)
 
 ### /del
-Delete a file (/del start.txt)
+Delete a file (Eg: /del start.txt)
 
 ### /ren
-Rename a file (/ren 10.png start.png)
+Rename a file (Eg: /ren 10.png start.png)
 
 ### /cmdget
 Get the commands list
 
 ### /cmdset
-Set the new commands (/cmdset cmd1 Do the thing 1)
+Set the new commands (Eg: /cmdset cmd1 Do the thing 1)
