@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.00
+//2021.04.10.01
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
@@ -47,6 +47,7 @@ function InAttendiment(int $Attender):bool{
 function GetAnAttendant():int{
   $Attendants = file_get_contents(__DIR__ . '/commands/chatflow.json');
   $Attendants = json_decode($Attendants, true);
+  shuffle($Attendants);
   foreach($Attendants as $Attendant):
     if(InAttendiment($Attendant) === false):
       return $Attendant;
