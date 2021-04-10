@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.03
+//2021.04.09.04
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -39,8 +39,7 @@ function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $err
 function AccentInsensitive(string $Text):string{
   return strtr(
     $Text,
-    ['ã'],
-    ['a']
+    ['ã' => 'a']
   );
 }
 
