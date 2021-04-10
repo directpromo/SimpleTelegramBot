@@ -12,6 +12,8 @@ To manage attendants list, edit the file commands/chatflow.json (JSON format).
 
 Eg: {"roger":123456789,"sidney":741852963}
 
+The person name its optional. Its good to know whose ID is each.
+
 ## Dependencies
 
 This bot use the Webhook tecnology. A web server with HTTPS URL are required.
