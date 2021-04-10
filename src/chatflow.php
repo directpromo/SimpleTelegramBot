@@ -1,42 +1,42 @@
 <?php
-//2021.04.10.01
+//2021.04.10.02
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
 
-function FlowLoad():void{
-  global $Flow;
-  $Flow = file_get_contents(__DIR__ . '/chatflow.json');
-  $Flow = json_decode($Flow, true);
+function ChatFlowLoad():void{
+  global $ChatFlow;
+  $ChatFlow = file_get_contents(__DIR__ . '/chatflow.json');
+  $ChatFlow = json_decode($ChatFlow, true);
 }
 
-function FlowSave():void{
-  global $Flow;
-  file_put_contents(__DIR__ . '/chatflow.json', json_encode($Flow));
+function ChatFlowSave():void{
+  global $ChatFlow;
+  file_put_contents(__DIR__ . '/chatflow.json', json_encode($ChatFlow));
 }
 
-function FlowSet(int $UserId, string $Field, string $Value):void{
-  global $Flow;
-  $Flow[$UserId][$Field] = $Value;
-  $Flow[$UserId]['time'] = time();
+function ChatFlowSet(int $UserId, string $Field, string $Value):void{
+  global $ChatFlow;
+  $ChatFlow[$UserId][$Field] = $Value;
+  $ChatFlow[$UserId]['time'] = time();
 }
 
 /**
  * @return string|false
  */
-function FlowGet(int $UserId, string $Field){
-  global $Flow;
-  return $Flow[$UserId][$Field] ?? false;
+function ChatFlowGet(int $UserId, string $Field){
+  global $ChatFlow;
+  return $ChatFlow[$UserId][$Field] ?? false;
 }
 
-function FlowDel(int $UserId):void{
-  global $Flow;
-  unset($Flow[$UserId]);
+function ChatFlowDel(int $UserId):void{
+  global $ChatFlow;
+  unset($ChatFlow[$UserId]);
 }
 
 function InAttendiment(int $Attender):bool{
-  global $Flow;
-  foreach($Flow as $User):
+  global $ChatFlow;
+  foreach($ChatFlow as $User):
     if($User['status'] === FlowStatusChatting and ($User['Attender'] ?? null) === $Attender):
       return true;
     endif;
@@ -55,8 +55,8 @@ function GetAnAttendant():int{
   endforeach;
 }
 
-FlowLoad();
-if(FlowGet($Server['message']['from']['id'], 'status') === false):
+ChatFlowLoad();
+if(ChatFlowGet($Server['message']['from']['id'], 'status') === false):
   Send($Server['message']['chat']['id'], LangWantAttendant, [
     'one_time_keyboard' => true,
     'resize_keyboard' => true,
@@ -65,21 +65,21 @@ if(FlowGet($Server['message']['from']['id'], 'status') === false):
       ]
     ]
   );
-  FlowSet($Server['message']['from']['id'], 'status', FlowStatusWaitingResponse);
-elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingResponse):
+  ChatFlowSet($Server['message']['from']['id'], 'status', FlowStatusWaitingResponse);
+elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingResponse):
   if(strcasecmp($Text, LangYes) === 0):
     $Attendant = GetAnAttendant();
 
     Send($Server['message']['from']['id'], LangWaitForAttender);
-    FlowSet($Server['message']['from']['id'], 'status', FlowStatusChatting);
-    FlowSet($Server['message']['from']['id'], 'with', $Attendant);
+    ChatFlowSet($Server['message']['from']['id'], 'status', FlowStatusChatting);
+    ChatFlowSet($Server['message']['from']['id'], 'with', $Attendant);
 
     Send($Attendant, sprintf(LangWantToChat, $Server['message']['from']['first_name'], LangEndChat));
-    FlowSet($Attendant, 'status', FlowStatusChatting);
-    FlowSet($Attendant, 'with', $Server['message']['from']['id']);
+    ChatFlowSet($Attendant, 'status', FlowStatusChatting);
+    ChatFlowSet($Attendant, 'with', $Server['message']['from']['id']);
   elseif(Equals($Text, LangNo)):
     Send($Server['message']['from']['id'], LangDontWaitForAttender);
-    FlowDel($Server['message']['from']['id']);
+    ChatFlowDel($Server['message']['from']['id']);
   else:
     Send($Server['message']['chat']['id'], LangWantAttendant, [
       'one_time_keyboard' => true,
@@ -90,16 +90,16 @@ elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingR
       ]
     );
   endif;
-elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusChatting):
+elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == FlowStatusChatting):
   if(Equals($Text, LangEndChat)):
-    $with = FlowGet($Server['message']['from']['id'], 'with');
+    $with = ChatFlowGet($Server['message']['from']['id'], 'with');
     Send($Server['message']['from']['id'], LangChatEnded);
     Send($with, LangChatEnded);
-    FlowDel($Server['message']['from']['id']);
-    FlowDel($with);
+    ChatFlowDel($Server['message']['from']['id']);
+    ChatFlowDel($with);
   else:
-    Send(FlowGet($Server['message']['from']['id'], 'with'), $Text);
-    FlowSet($Server['message']['from']['id'], 'time', '');
+    Send(ChatFlowGet($Server['message']['from']['id'], 'with'), $Text);
+    ChatFlowSet($Server['message']['from']['id'], 'time', '');
   endif;
 endif;
-FlowSave();
+ChatFlowSave();
