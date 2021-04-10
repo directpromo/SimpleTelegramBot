@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.01
+//2021.04.09.02
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
@@ -56,7 +56,14 @@ function GetAnAttendant():int{
 
 FlowLoad();
 if(FlowGet($Server['message']['from']['id'], 'status') === false):
-  Send($Server['message']['chat']['id'], LangWantAttendant);
+  Send($Server['message']['chat']['id'], LangWantAttendant, [
+    'one_time_keyboard' => true,
+    'resize_keyboard' => true,
+    'keyboard'=>[
+        [LangNo, LangYes]
+      ]
+    ]
+  );
   FlowSet($Server['message']['from']['id'], 'status', FlowStatusWaitingResponse);
 elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingResponse):
   if(strcasecmp($Text, LangYes) === 0):
@@ -73,7 +80,14 @@ elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingR
     Send($Server['message']['from']['id'], LangDontWaitForAttender);
     FlowDel($Server['message']['from']['id']);
   else:
-    Send($Server['message']['chat']['id'], LangWantAttendant);
+    Send($Server['message']['chat']['id'], LangWantAttendant, [
+      'one_time_keyboard' => true,
+      'resize_keyboard' => true,
+      'keyboard'=>[
+          [LangNo, LangYes]
+        ]
+      ]
+    );
   endif;
 elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusChatting):
   if(Equals($Text, LangEndChat)):
