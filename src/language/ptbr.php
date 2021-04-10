@@ -1,21 +1,21 @@
 <?php
-//2021.04.10.00
+//2021.04.10.01
 
-const LangMyId = 'Meu ID';
-const LangYourId = 'Seu ID é %s';
-const LangFileSaved = '%s salvo.';
-const LangCommUpdate = 'Comandos atualizados.';
-const LangRenamed = '%s renomeado.';
-const LangDeleted = '%s excluído.';
-const LangSaved = '%s salvo.';
-const LangFileNotFound = 'Arquivo não encontrado.';
-const LangYes = 'Sim';
-const LangNo = 'Não';
-const LangWantAttendant = "Eu não sei responder isso ainda.\nVocê que falar com alguém?\nResponda com Sim ou Não.";
-const LangWaitForAttender = 'Alguém irá lhe atender em breve. Por favor, aguarde.';
-const LangDontWaitForAttender = 'Ok. Espero te ver em breve.';
-const LangDontUnderstand = 'Desculpe, não entendi';
-const LangWantToChat = "%s quer conversar.\nSuas mensagens serão encaminhadas para ele(a).\nDiga <b>%s</b> para terminar o chat.";
-const LangEndChat = '-sair';
-const LangChatEnded = '<b>Sua conversa foi encerrada.</b>';
-const LangUnknow = 'Mensagem desconhecida enviada:';
+const Lang_MyId = 'Meu ID';
+const Lang_YourId = 'Seu ID é %s';
+const Lang_FileSaved = '%s salvo.';
+const Lang_CommUpdate = 'Comandos atualizados.';
+const Lang_Renamed = '%s renomeado.';
+const Lang_Deleted = '%s excluído.';
+const Lang_Saved = '%s salvo.';
+const Lang_FileNotFound = 'Arquivo não encontrado.';
+const Lang_Yes = 'Sim';
+const Lang_No = 'Não';
+const Lang_WantAttendant = "Eu não sei responder isso ainda.\nVocê que falar com alguém?\nResponda com Sim ou Não.";
+const Lang_WaitForAttender = 'Alguém irá lhe atender em breve. Por favor, aguarde.';
+const Lang_DontWaitForAttender = 'Ok. Espero te ver em breve.';
+const Lang_DontUnderstand = 'Desculpe, não entendi';
+const Lang_WantToChat = "%s quer conversar.\nSuas mensagens serão encaminhadas para ele(a).\nDiga <b>%s</b> para terminar o chat.";
+const Lang_EndChat = '-sair';
+const Lang_ChatEnded = '<b>Sua conversa foi encerrada.</b>';
+const Lang_Unknow = 'Mensagem desconhecida enviada:';

@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.02
+//2021.04.10.03
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -94,7 +94,7 @@ function Unknow():void{
   global $Server;
   LogEvent('Unknow');
   Send($Server['message']['from']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
-  Send(DebugId, LangUnknow . "\n" . json_encode($Server, JSON_PRETTY_PRINT));
+  Send(DebugId, Lang_Unknow . "\n" . json_encode($Server, JSON_PRETTY_PRINT));
 }
 
 // ----------------------- Commands -------------------------------
@@ -122,7 +122,7 @@ function Command_get():void{
       $file = file_get_contents(__DIR__ . '/commands/' . $file);
       Send($Server['message']['from']['id'], $file);
     else:
-      Send($Server['message']['from']['id'], sprintf(LangFileNotFound, $file));
+      Send($Server['message']['from']['id'], sprintf(Lang_FileNotFound, $file));
     endif;
   endif;
 }
@@ -136,7 +136,7 @@ function Command_set():void{
     if(substr($file, -3) !== 'php'):
       $content = substr($text, $pos + 1);
       file_put_contents(__DIR__ . '/commands/' . $file, $content);
-      Send($Server['message']['from']['id'], sprintf(LangSaved, $file));
+      Send($Server['message']['from']['id'], sprintf(Lang_Saved, $file));
     endif;
   endif;
 }
@@ -146,7 +146,7 @@ function Command_del():void{
   if(IsAdmin($Server['message']['from']['id'])):
     $file = substr($Server['message']['text'], 5);
     unlink(__DIR__ . '/commands/' . $file);
-    Send($Server['message']['from']['id'], sprintf(LangDeleted, $file));
+    Send($Server['message']['from']['id'], sprintf(Lang_Deleted, $file));
   endif;
 }
 
@@ -156,7 +156,7 @@ function Command_ren():void{
     $file = substr($Server['message']['text'], 5);
     $file = explode(' ', $file);
     rename(__DIR__ . '/commands/' . $file[0], __DIR__ . '/commands/' . $file[1]);
-    Send($Server['message']['from']['id'], sprintf(LangRenamed, $file[0]));
+    Send($Server['message']['from']['id'], sprintf(Lang_Renamed, $file[0]));
   endif;
 }
 
@@ -189,7 +189,7 @@ function Command_cmdset():void{
     endforeach;
     $temp = file_get_contents(Url . '/setMyCommands?commands=' . json_encode($commands));
     //Send(DebugId, $temp);
-    Send($Server['message']['from']['id'], LangCommUpdate);
+    Send($Server['message']['from']['id'], Lang_CommUpdate);
   endif;
 }
 
@@ -209,7 +209,7 @@ function Action_():void{
   elseif(isset($Server['message'])):
     if((isset($Server['message']['document']) or isset($Server['message']['photo'])) and IsAdmin($Server['message']['from']['id'])):
       $file = DownloadFile(__DIR__ . '/commands');
-      Send($Server['message']['from']['id'], sprintf(LangFileSaved, $file));
+      Send($Server['message']['from']['id'], sprintf(Lang_FileSaved, $file));
     else:
       $count = strlen(Bot['username']) + 1;
       $Text = $Server['message']['text'];
@@ -234,9 +234,9 @@ function Action_():void{
           LogEvent($command);
           call_user_func('Command_' . $command);
         endif;
-      elseif(Equals($Text, LangMyId)):
+      elseif(Equals($Text, Lang_MyId)):
         LogEvent('MyId');
-        Send($Server['message']['from']['id'], sprintf(LangYourId, $Server['message']['from']['id']));
+        Send($Server['message']['from']['id'], sprintf(Lang_YourId, $Server['message']['from']['id']));
       elseif(ChatFlowEnable):
         require(__DIR__ . '/chatflow.php');
       else:
