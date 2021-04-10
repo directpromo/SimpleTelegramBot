@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.02
+//2021.04.10.00
 
 const LangMyId = 'My ID';
 const LangYourId = 'Your ID is %s';
@@ -15,7 +15,7 @@ const LangWantAttendant = "I dont know to anser that yet.\nYou want to chat with
 const LangWaitForAttender = 'Somebody will answer you soon. Please wait.';
 const LangDontWaitForAttender = 'Ok. Hope to see you soon.';
 const LangDontUnderstand = "Sorry, I don't understand.";
-const LangWantToChat = '%s wants to chat. Your messages will be redirected to him. Say <b>%s</b> to end the chat.';
+const LangWantToChat = "%s wants to chat.\nYour messages will be redirected to him.\nSay <b>%s</b> to end the chat.";
 const LangEndChat = '-end';
 const LangChatEnded = '<b>Your chat are ended.</b>';
 const LangUnknow = 'Unknow message sent';
