@@ -1,10 +1,11 @@
+bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/chatflow.json
+f98915d3236a45fc14db030146f03d247f71cd62  src/chatflow.php
 97d170e1550eee4afc0af065b78cda302a97674c  src/commands/admins.json
+bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/commands/chatflow.json
 873c7c23c66c17cba93674b56bdf90a37ff0e839  src/commands/start.txt
 8c53993e2887f09d9e5b0bd5c03369e2e8e49d11  src/commands/unknow.txt
+fe3270a2832a0c7d0210a2a355c784ce1bc22080  src/config.php
 7781cbdfa35dd3c08b0fa29adbe4808392f4f9f4  src/language/ptbr.php
 047ce41083d2aa36324c3c20fbd8b5b56bf385f8  src/language/us.php
 da39a3ee5e6b4b0d3255bfef95601890afd80709  src/modules/index.htm
-1f1517d41dbdbe0f2124b6e467b381b69f4d016b  src/config.php
-bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/flow.json
-2f549bca3eddc9b55b42e84bf0f3b3d7e0fc6026  src/flow.php
-f4c1d08467a742633c572b04a917829679486c1e  src/telegram.php
+10d14a49a9ece0f418fcf53431967fc467f1f93f  src/telegram.php
