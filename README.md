@@ -1,6 +1,6 @@
 # TelegramBot
 
-This bot replys the commands with a TXT file content. To create a new reply/command, just create the TXT file. The name is the command and the content is the reply.
+This bot replys the commands with a TXT file content. To create a new reply/command, just create the TXT file. The name is the command and the content is the reply. You can put a picture with the text, just put a PNG image with the command name.
 
 The Telegram command list can be set with the command /cmdset.
 
