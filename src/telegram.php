@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.04
+//2021.04.10.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -252,8 +252,8 @@ function Action_():void{
       elseif(Equals($Text, LangMyId)):
         LogEvent('MyId');
         Send($Server['message']['from']['id'], sprintf(LangYourId, $Server['message']['from']['id']));
-      elseif(FlowEnable):
-        require(__DIR__ . '/flow.php');
+      elseif(ChatFlowEnable):
+        require(__DIR__ . '/chatflow.php');
       else:
         Unknow();
       endif;

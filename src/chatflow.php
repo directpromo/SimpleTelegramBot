@@ -1,18 +1,18 @@
 <?php
-//2021.04.09.02
+//2021.04.10.00
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
 
 function FlowLoad():void{
   global $Flow;
-  $Flow = file_get_contents(__DIR__ . '/flow.json');
+  $Flow = file_get_contents(__DIR__ . '/chatflow.json');
   $Flow = json_decode($Flow, true);
 }
 
 function FlowSave():void{
   global $Flow;
-  file_put_contents(__DIR__ . '/flow.json', json_encode($Flow));
+  file_put_contents(__DIR__ . '/chatflow.json', json_encode($Flow));
 }
 
 function FlowSet(int $UserId, string $Field, string $Value):void{
@@ -45,7 +45,7 @@ function InAttendiment(int $Attender):bool{
 }
 
 function GetAnAttendant():int{
-  $Attendants = file_get_contents(__DIR__ . '/commands/attendants.json');
+  $Attendants = file_get_contents(__DIR__ . '/commands/chatflow.json');
   $Attendants = json_decode($Attendants, true);
   foreach($Attendants as $Attendant):
     if(InAttendiment($Attendant) === false):
