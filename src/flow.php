@@ -1,5 +1,5 @@
 <?php
-//2021.04.09.00
+//2021.04.09.01
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
@@ -73,7 +73,7 @@ elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusWaitingR
     Send($Server['message']['from']['id'], LangDontWaitForAttender);
     FlowDel($Server['message']['from']['id']);
   else:
-    Send($Server['message']['chat']['id'], file_get_contents(__DIR__ . '/commands/unknow.txt'));
+    Send($Server['message']['chat']['id'], LangWantAttendant);
   endif;
 elseif(FlowGet($Server['message']['from']['id'], 'status') == FlowStatusChatting):
   if(Equals($Text, LangEndChat)):
