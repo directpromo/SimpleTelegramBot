@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.02
+//2021.04.10.03
 
 const FlowStatusWaitingResponse = '0';
 const FlowStatusChatting = '1';
@@ -70,7 +70,7 @@ elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == FlowStatusWait
   if(strcasecmp($Text, LangYes) === 0):
     $Attendant = GetAnAttendant();
 
-    Send($Server['message']['from']['id'], LangWaitForAttender);
+    Send($Server['message']['from']['id'], LangWaitForAttender, ['remove_keyboard' => true]);
     ChatFlowSet($Server['message']['from']['id'], 'status', FlowStatusChatting);
     ChatFlowSet($Server['message']['from']['id'], 'with', $Attendant);
 
@@ -78,7 +78,7 @@ elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == FlowStatusWait
     ChatFlowSet($Attendant, 'status', FlowStatusChatting);
     ChatFlowSet($Attendant, 'with', $Server['message']['from']['id']);
   elseif(Equals($Text, LangNo)):
-    Send($Server['message']['from']['id'], LangDontWaitForAttender);
+    Send($Server['message']['from']['id'], LangDontWaitForAttender, ['remove_keyboard' => true]);
     ChatFlowDel($Server['message']['from']['id']);
   else:
     Send($Server['message']['chat']['id'], LangWantAttendant, [
