@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.04
+//2021.04.10.05
 
 const ChatFlowStatus_WaitingResponse = '0';
 const ChatFlowStatus_Chatting = '1';
@@ -48,7 +48,7 @@ function GetAnAttendant():int{
 function CheckTimes():void{
   global $ChatFlow;
   foreach($ChatFlow as $User => $data):
-    if($data['time'] < strtotime('-1 minutes')):
+    if($data['time'] < strtotime('-10 minutes')):
       Send($User, Lang_ChatEnded);
       Send($data['with'], Lang_ChatEnded);
       ChatFlowDel($User);
