@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.01
+//2021.04.10.02
 
 //(string) Token given by @BotFather
 const Token = '';
@@ -11,4 +11,5 @@ const DebugId = 0;
 const DefaultLanguage = 'us';
 
 //(bool) Enable chat flow with attendants
-const ChatFlowEnable = true;
+const ChatFlow_Enable = true;
+const ChatFlow_Inactivity = 10;
