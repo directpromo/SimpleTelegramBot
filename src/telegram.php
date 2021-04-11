@@ -1,10 +1,11 @@
 <?php
-//2021.04.11.03
+//2021.04.11.04
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
 // ----------------------- System ---------------------------------
 set_error_handler('ErrorSet');
+ob_start();
 require(__DIR__ . '/basics.php');
 require(__DIR__ . '/config.php');
 const Url = 'https://api.telegram.org/bot' . Token;
@@ -32,11 +33,9 @@ endforeach;
 
 function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $errline = null, ?array $errcontext = null):void{
   global $Server;
-  Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
-  $data = ob_get_contents();
-  if($data !== ''):
-    Send(DebugId, $data);
-  endif;
+  print json_encode($Server, JSON_PRETTY_PRINT) . "\n\n";
+  debug_print_backtrace();
+  Send(DebugId, ob_get_contents());
   die();
 }
 
