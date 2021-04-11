@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.02
+//2021.04.11.03
 
 require(dirname(__DIR__, 1) . '/language/' . DefaultLanguage . '_chatflow.php');
 require(__DIR__ . '/templates.php');
@@ -150,13 +150,15 @@ if(isset($Server['message'])):
       if($User === false):
         TmpUsersInWaitList($Attendant);
       else:
-        
+        $name = file_get_contents(Url . '/getChat?chat_id=' . $User);
+        $name = json_decode($name, true);
+        $name = $name['result']['first_name'];
         ChatFlowSet($User, 'status', CfStatus_Chatting);
         ChatFlowSet($User, 'with', $Attendant);
         ChatFlowSet($Attendant, 'status', CfStatus_Chatting, []);
         ChatFlowSet($Attendant, 'with', $User);
         Send($User, Lang_ChatFlow_ChattingWithAttendant);
-        Send($Attendant, sprintf(Lang_ChatFlow_ChattingWithClient, $Server['message']['from']['first_name']), TmpBtnRemove());
+        Send($Attendant, sprintf(Lang_ChatFlow_ChattingWithClient, $name), TmpBtnRemove());
       endif;
     elseif(Equals($Msg, Lang_ChatFlow_Cmd_EndChat) and ChatFlowGet($Attendant, 'status') === CfStatus_Chatting):
       ChatEnd($Attendant);
@@ -188,7 +190,7 @@ if(isset($Server['message'])):
   elseif(ChatFlowGet($User, 'status') == CfStatus_Chatting):
     $Attendant = ChatFlowGet($User, 'with');
     ChatFlowSet($User, 'status', CfStatus_Chatting);
-    Send($Attendant, $Msg);
+    Send($Attendant, $Server['message']['from']['first_name'] . ":\n" . $Msg);
   endif;
 endif;
 ChatFlowSave();

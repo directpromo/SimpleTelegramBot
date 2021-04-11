@@ -1,6 +1,6 @@
 a718a044a191e35f5dd120a7abe064697d2b3c2b  src/basics.php
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/chatflow/chatflow.json
-d666bf472401fd053db15d88ae928a5028c00ac3  src/chatflow/chatflow.php
+fd4ada112d56c4b547f15f1494eac8f7be7d446e  src/chatflow/chatflow.php
 c3c00f3dc1460c5d3cdff33c5c62151ab6fe3f77  src/chatflow/templates.php
 97d170e1550eee4afc0af065b78cda302a97674c  src/commands/admins.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/commands/chatflow.json
