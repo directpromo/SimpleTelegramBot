@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.02
+//2021.04.11.03
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -33,6 +33,10 @@ endforeach;
 function ErrorSet(int $errno, string $errstr, ?string $errfile = null, ?int $errline = null, ?array $errcontext = null):void{
   global $Server;
   Send(DebugId, "Error $errno: $errstr in file $errfile line $errline\n" . json_encode($Server, JSON_PRETTY_PRINT));
+  $data = ob_get_contents();
+  if($data !== ''):
+    Send(DebugId, $data);
+  endif;
   die();
 }
 
