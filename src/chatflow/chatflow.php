@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.06
+//2021.04.11.07
 
 require(dirname(__DIR__, 1) . '/language/' . DefaultLanguage . '_chatflow.php');
 require(__DIR__ . '/templates.php');
@@ -140,60 +140,65 @@ function CheckTimes():void{
   endfor;
 }
 
-ob_start();
 ChatFlowLoad();
 CheckTimes(); //Check the times in each message, case cron are not set
 if(isset($Server['message'])):
   $User = $Server['message']['from']['id'];
-  $Msg = $Server['message']['text'];
-  if(IsAttendant($User)):
-    $Attendant = $User;
-    if(Equals($Msg, Lang_ChatFlow_Cmd_Next) and ChatFlowGet($Attendant, 'status') !== CfStatus_Chatting):
-      $User = WaitListNext();
-      if($User === false):
-        TmpUsersInWaitList($Attendant);
+  if(isset($Server['message']['text'])):
+    $Msg = $Server['message']['text'];
+    if(IsAttendant($User)):
+      $Attendant = $User;
+      if(Equals($Msg, Lang_ChatFlow_Cmd_Next) and ChatFlowGet($Attendant, 'status') !== CfStatus_Chatting):
+        $User = WaitListNext();
+        if($User === false):
+          TmpUsersInWaitList($Attendant);
+        else:
+          $name = file_get_contents(Url . '/getChat?chat_id=' . $User);
+          $name = json_decode($name, true);
+          $name = $name['result']['first_name'];
+          ChatFlowSet($User, 'status', CfStatus_Chatting);
+          ChatFlowSet($User, 'with', $Attendant);
+          ChatFlowSet($Attendant, 'status', CfStatus_Chatting, []);
+          ChatFlowSet($Attendant, 'with', $User);
+          Send($User, Lang_ChatFlow_ChattingWithAttendant);
+          Send($Attendant, sprintf(Lang_ChatFlow_ChattingWithClient, $name, ChatFlow_Inactivity, Lang_ChatFlow_Cmd_EndChat), TmpBtnRemove());
+        endif;
+      elseif(Equals($Msg, Lang_ChatFlow_Cmd_EndChat) and ChatFlowGet($Attendant, 'status') === CfStatus_Chatting):
+        ChatEnd($Attendant);
+      elseif(ChatFlowGet($Attendant, 'status') === CfStatus_Chatting):
+        $User = ChatFlowGet($Attendant, 'with');
+        Send($User, $Msg);
+        ChatFlowSet($Attendant, 'status', CfStatus_Chatting);
       else:
-        $name = file_get_contents(Url . '/getChat?chat_id=' . $User);
-        $name = json_decode($name, true);
-        $name = $name['result']['first_name'];
-        ChatFlowSet($User, 'status', CfStatus_Chatting);
-        ChatFlowSet($User, 'with', $Attendant);
-        ChatFlowSet($Attendant, 'status', CfStatus_Chatting, []);
-        ChatFlowSet($Attendant, 'with', $User);
-        Send($User, Lang_ChatFlow_ChattingWithAttendant);
-        Send($Attendant, sprintf(Lang_ChatFlow_ChattingWithClient, $name, ChatFlow_Inactivity, Lang_ChatFlow_Cmd_EndChat), TmpBtnRemove());
+        TmpUsersInWaitList($Attendant);
       endif;
-    elseif(Equals($Msg, Lang_ChatFlow_Cmd_EndChat) and ChatFlowGet($Attendant, 'status') === CfStatus_Chatting):
-      ChatEnd($Attendant);
-    elseif(ChatFlowGet($Attendant, 'status') === CfStatus_Chatting):
-      $User = ChatFlowGet($Attendant, 'with');
-      Send($User, $Msg);
-      ChatFlowSet($Attendant, 'status', CfStatus_Chatting);
-    else:
-      TmpUsersInWaitList($Attendant);
-    endif;
 
-  elseif(ChatFlowGet($User, 'status') === false):
-    Send($User, Lang_ChatFlow_DontKnow . Lang_ChatFlow_WantAttendant, TmpBtnYesNo());
-    ChatFlowSet($User, 'status', CfStatus_WaitingReply_WaitList);
-
-  elseif(ChatFlowGet($User, 'status') == CfStatus_WaitingReply_WaitList):
-    if(Equals($Text, Lang_Yes)):
-      Send($User, Lang_ChatFlow_InWaitList, TmpBtnRemove());
-      ChatFlowSet($User, 'status', CfStatus_WaitList);
-      WaitListBroadcast();
-    elseif(Equals($Text, Lang_No)):
-      Send($User, Lang_ChatFlow_DontWait, TmpBtnRemove());
-      ChatFlowDel($User);
-    else:
-      Send($User, Lang_ChatFlow_WantAttendant, TmpBtnYesNo());
+    elseif(ChatFlowGet($User, 'status') === false):
+      Send($User, Lang_ChatFlow_DontKnow . Lang_ChatFlow_WantAttendant, TmpBtnYesNo());
       ChatFlowSet($User, 'status', CfStatus_WaitingReply_WaitList);
-    endif;
 
-  elseif(ChatFlowGet($User, 'status') == CfStatus_Chatting):
-    $Attendant = ChatFlowGet($User, 'with');
+    elseif(ChatFlowGet($User, 'status') == CfStatus_WaitingReply_WaitList):
+      if(Equals($Text, Lang_Yes)):
+        Send($User, Lang_ChatFlow_InWaitList, TmpBtnRemove());
+        ChatFlowSet($User, 'status', CfStatus_WaitList);
+        WaitListBroadcast();
+      elseif(Equals($Text, Lang_No)):
+        Send($User, Lang_ChatFlow_DontWait, TmpBtnRemove());
+        ChatFlowDel($User);
+      else:
+        Send($User, Lang_ChatFlow_WantAttendant, TmpBtnYesNo());
+        ChatFlowSet($User, 'status', CfStatus_WaitingReply_WaitList);
+      endif;
+
+    elseif(ChatFlowGet($User, 'status') == CfStatus_Chatting):
+      $Attendant = ChatFlowGet($User, 'with');
+      ChatFlowSet($User, 'status', CfStatus_Chatting);
+      Send($Attendant, $Server['message']['from']['first_name'] . ":\n" . $Msg);
+    endif;
+  elseif(isset($Server['message']['voice']) and ChatFlowGet($User, 'status') == CfStatus_Chatting):
+    $with = ChatFlowGet($User, 'with');
+    file_get_contents(Url . '/sendVoice?chat_id=' . $with . '&voice=' . $Server['message']['voice']['file_id']);
     ChatFlowSet($User, 'status', CfStatus_Chatting);
-    Send($Attendant, $Server['message']['from']['first_name'] . ":\n" . $Msg);
   endif;
 endif;
 

@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.04
+//2021.04.11.05
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -214,7 +214,7 @@ function Action_():void{
     if((isset($Server['message']['document']) or isset($Server['message']['photo'])) and IsAdmin($Server['message']['from']['id'])):
       $file = DownloadFile(__DIR__ . '/commands');
       Send($Server['message']['from']['id'], sprintf(Lang_FileSaved, $file));
-    else:
+    elseif(isset($Server['message']['text'])):
       $count = strlen(Bot['username']) + 1;
       $Text = $Server['message']['text'];
       if($Server['message']['chat']['type'] === 'group' and substr($Text, -$count) === ('@' . Bot['username'])):
@@ -245,6 +245,10 @@ function Action_():void{
         require(__DIR__ . '/chatflow/chatflow.php');
       else:
         Unknow();
+      endif;
+    elseif(isset($Server['message']['voice'])):
+      if(ChatFlow_Enable):
+        require(__DIR__ . '/chatflow/chatflow.php');
       endif;
     endif;
   endif;
