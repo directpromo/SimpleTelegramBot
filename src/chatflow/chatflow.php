@@ -1,7 +1,7 @@
 <?php
-//2021.04.11.01
+//2021.04.11.02
 
-require(dirname(__DIR__, 1) . '/languages/' . DefaultLanguage . '_chatflow.php');
+require(dirname(__DIR__, 1) . '/language/' . DefaultLanguage . '_chatflow.php');
 require(__DIR__ . '/templates.php');
 
 const CfStatus_WaitingReply_WaitList = 0;
