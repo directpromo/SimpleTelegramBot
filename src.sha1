@@ -1,6 +1,6 @@
 a718a044a191e35f5dd120a7abe064697d2b3c2b  src/basics.php
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/chatflow/chatflow.json
-57463a730e28cdce6a834f6051198466c786b221  src/chatflow/chatflow.php
+2072f03d65d135ea594da7fa884b29912b67c9eb  src/chatflow/chatflow.php
 bf43c7ee129d04b7c740fb2041aca0915fdf0721  src/chatflow/templates.php
 97d170e1550eee4afc0af065b78cda302a97674c  src/commands/admins.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/commands/chatflow.json
@@ -8,9 +8,9 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/commands/chatflow.json
 8c53993e2887f09d9e5b0bd5c03369e2e8e49d11  src/commands/unknow.txt
 5de37772ea3a3415baed3c7211d7d14cb4723556  src/config.php
 8fb7ab2d0d01dba10fadad78e369c5b2c3bb9f7e  src/language/ptbr.php
-1419f432751c93e555b06a4045f3fdc8e72027b3  src/language/ptbr_chatflow.php
+a46190b2878c16fc3134e18e5d0eaa418e573f04  src/language/ptbr_chatflow.php
 4f80901fb920cda8bc362dd151a2e750d6332dd0  src/language/us.php
-e42f97f5769c7dd54a9e6a63b74af4ca31a58bda  src/language/us_chatflow.php
+5f00e6b5af07fadcea60a977bcab95681da38a71  src/language/us_chatflow.php
 da39a3ee5e6b4b0d3255bfef95601890afd80709  src/modules/index.htm
 edd07e9a17bc60f2c7b867f9e3a22014c9ceb219  src/stats.php
-2934152e019b49fa1b872230d489388bc055b987  src/telegram.php
+eef36ea0cf7c1d4e82d7a82ec13e237e25a71c0c  src/telegram.php
