@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.02
+//2021.04.11.03
 
 function TmpBtnYesNo():array{
   return [
@@ -18,7 +18,7 @@ function TmpBtnRemove():array{
 function TmpUsersInWaitList(int $User):void{
   $count = WaitListCount();
   if($count === 0):
-    $kb = null;
+    $kb = TmpBtnRemove();
   else:
     $kb = [
       'one_time_keyboard' => true,
