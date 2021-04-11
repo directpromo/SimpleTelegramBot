@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.01
+//2021.04.11.00
 
 const Lang_MyId = 'Meu ID';
 const Lang_YourId = 'Seu ID é %s';
@@ -11,11 +11,16 @@ const Lang_Saved = '%s salvo.';
 const Lang_FileNotFound = 'Arquivo não encontrado.';
 const Lang_Yes = 'Sim';
 const Lang_No = 'Não';
-const Lang_WantAttendant = "Eu não sei responder isso ainda.\nVocê que falar com alguém?\nResponda com Sim ou Não.";
-const Lang_WaitForAttender = 'Alguém irá lhe atender em breve. Por favor, aguarde.';
-const Lang_DontWaitForAttender = 'Ok. Espero te ver em breve.';
-const Lang_DontUnderstand = 'Desculpe, não entendi';
-const Lang_WantToChat = "%s quer conversar.\nSuas mensagens serão encaminhadas para ele(a).\nDiga <b>%s</b> para terminar o chat.";
-const Lang_EndChat = '-sair';
-const Lang_ChatEnded = '<b>Sua conversa foi encerrada.</b>';
 const Lang_Unknow = 'Mensagem desconhecida enviada:';
+
+const Lang_ChatFlow_Cmd_EndChat = '-sair';
+const Lang_ChatFlow_Cmd_Next = '-proximo';
+const Lang_ChatFlow_DontKnow = "Eu não sei responder isso ainda.\n";
+const Lang_ChatFlow_WantAttendant = 'Você que falar com alguém?';
+const Lang_ChatFlow_InWaitList = 'Alguém irá lhe atender em breve. Por favor, aguarde.';
+const Lang_ChatFlow_ChattingWithAttendant = "Você está conversando com um atendente.\nSuas mensagens serão encaminhadas para ele.";
+const Lang_ChatFlow_NoAttenders = "Todos os nossos atendentes estão ocupados.\nContinuar aguardando?";
+const Lang_ChatFlow_DontWait = 'Ok. Espero te ver em breve.';
+const Lang_ChatFlow_ChatEnded = '<b>Sua conversa foi encerrada.</b>';
+const Lang_ChatFlow_UsersInWaitList = 'Tem %s usuários na fila de atendimento.';
+const Lang_ChatFlow_ChattingWithClient = "Você está conversando com %s.\nSuas mensagens serão encaminhadas para ele.";
