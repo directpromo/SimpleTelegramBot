@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.04
+//2021.04.11.05
 
 require(dirname(__DIR__, 1) . '/language/' . DefaultLanguage . '_chatflow.php');
 require(__DIR__ . '/templates.php');
@@ -125,13 +125,16 @@ function ChatEnd(int $User):void{
 
 function CheckTimes():void{
   global $ChatFlow;
-  foreach($ChatFlow as $User => $data):
+  foreach($ChatFlow as $data):
     if($data['time'] < strtotime('-' . ChatFlow_Inactivity . ' minutes')):
       if($data['status'] === CfStatus_Chatting):
-        ChatEnd($User);
+        ChatEnd($data['user']);
       elseif($data['status'] === CfStatus_WaitList):
-        Send($User, Lang_ChatFlow_NoAttenders, TmpBtnYesNo());
-        ChatFlowSet($User, 'status', CfStatus_WaitingReply_WaitList);
+        Send($data['user'], Lang_ChatFlow_NoAttenders, TmpBtnYesNo());
+        ChatFlowSet($data['user'], 'status', CfStatus_WaitingReply_WaitList);
+      elseif($data['status'] === CfStatus_WaitingReply_WaitList):
+        Send($data['user'], Lang_ChatFlow_ChatEnded, TmpBtnRemove());
+        ChatFlowDel($data['user']);
       endif;
     endif;
   endforeach;
