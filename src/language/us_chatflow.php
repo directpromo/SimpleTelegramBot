@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.02
+//2021.04.11.03
 
 const Lang_ChatFlow_Cmd_EndChat = '-exit';
 const Lang_ChatFlow_Cmd_Next = '-next';
@@ -11,4 +11,4 @@ const Lang_ChatFlow_NoAttenders = "All our attendants are busy.\nKeep waiting?";
 const Lang_ChatFlow_DontWait = 'Ok. See you soon.';
 const Lang_ChatFlow_ChatEnded = '<b>Your chat are closed.</b>';
 const Lang_ChatFlow_UsersInWaitList = "Have %s users in the wait list.\nSay <b>%s</b> to take the next in line.";
-const Lang_ChatFlow_ChattingWithClient = "You are chatting with %s.\nYour messages will be forwarded to him.\nThe chat will be auto closed with %s minutes of inactivity.\nSay <b>%s</b> to close the chat.";
+const Lang_ChatFlow_ChattingWithClient = "You are chatting with <b>%s</b>.\nYour messages will be forwarded.\nThe chat will be auto closed with %s minutes of inactivity.\nSay <b>%s</b> to close the chat.";
