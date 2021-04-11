@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.05
+//2021.04.11.06
 
 require(dirname(__DIR__, 1) . '/language/' . DefaultLanguage . '_chatflow.php');
 require(__DIR__ . '/templates.php');
@@ -33,6 +33,7 @@ function ChatFlowSet(int $User, string $Field, int $Value):void{
     $ChatFlow[$index][$Field] = $Value;
     $ChatFlow[$index]['time'] = time();
   endif;
+  ChatFlowSave();
 }
 
 /**
@@ -40,6 +41,7 @@ function ChatFlowSet(int $User, string $Field, int $Value):void{
  */
 function ChatFlowGet(int $User, string $Field){
   global $ChatFlow;
+  ChatFlowLoad();
   $index = array_search($User, array_column($ChatFlow, 'user'));
   if($index === false):
     return false;
@@ -52,6 +54,8 @@ function ChatFlowDel(int $User):void{
   global $ChatFlow;
   $index = array_search($User, array_column($ChatFlow, 'user'));
   unset($ChatFlow[$index]);
+  $ChatFlow = array_values($ChatFlow);
+  ChatFlowSave();
 }
 
 //--------------------------------------------------------------------------------
@@ -116,28 +120,24 @@ function ChatEnd(int $User):void{
   ChatFlowDel($User2);
   Send($User, Lang_ChatFlow_ChatEnded);
   Send($User2, Lang_ChatFlow_ChatEnded);
-  if(IsAttendant(($User))):
-    TmpUsersInWaitList($User);
-  else:
-    TmpUsersInWaitList($User2);
-  endif;
+  WaitListBroadcast();
 }
 
 function CheckTimes():void{
   global $ChatFlow;
-  foreach($ChatFlow as $data):
-    if($data['time'] < strtotime('-' . ChatFlow_Inactivity . ' minutes')):
-      if($data['status'] === CfStatus_Chatting):
-        ChatEnd($data['user']);
-      elseif($data['status'] === CfStatus_WaitList):
-        Send($data['user'], Lang_ChatFlow_NoAttenders, TmpBtnYesNo());
-        ChatFlowSet($data['user'], 'status', CfStatus_WaitingReply_WaitList);
-      elseif($data['status'] === CfStatus_WaitingReply_WaitList):
-        Send($data['user'], Lang_ChatFlow_ChatEnded, TmpBtnRemove());
-        ChatFlowDel($data['user']);
+  for($i = 0; $i < count($ChatFlow); $i++):
+    if($ChatFlow[$i]['time'] <= strtotime('-' . ChatFlow_Inactivity . ' minutes')):
+      if($ChatFlow[$i]['status'] === CfStatus_Chatting):
+        ChatEnd($ChatFlow[$i]['user']);
+      elseif($ChatFlow[$i]['status'] === CfStatus_WaitList):
+        Send($ChatFlow[$i]['user'], Lang_ChatFlow_NoAttenders, TmpBtnYesNo());
+        ChatFlowSet($ChatFlow[$i]['user'], 'status', CfStatus_WaitingReply_WaitList);
+      elseif($ChatFlow[$i]['status'] === CfStatus_WaitingReply_WaitList):
+        Send($ChatFlow[$i]['user'], Lang_ChatFlow_ChatEnded, TmpBtnRemove());
+        ChatFlowDel($ChatFlow[$i]['user']);
       endif;
     endif;
-  endforeach;
+  endfor;
 }
 
 ob_start();
@@ -196,7 +196,6 @@ if(isset($Server['message'])):
     Send($Attendant, $Server['message']['from']['first_name'] . ":\n" . $Msg);
   endif;
 endif;
-ChatFlowSave();
 
 //Debug
 $data = ob_get_contents();
