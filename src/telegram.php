@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.00
+//2021.04.11.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -206,7 +206,7 @@ function Action_():void{
   $Server = json_decode($Server, true);
   $argv ??= [];
   if(array_search('-CheckTimes', $argv) !== false):
-    require(__DIR__ . '/chatflow.php');
+    require(__DIR__ . '/chatflow/chatflow.php');
   elseif(isset($Server['message'])):
     if((isset($Server['message']['document']) or isset($Server['message']['photo'])) and IsAdmin($Server['message']['from']['id'])):
       $file = DownloadFile(__DIR__ . '/commands');
@@ -239,7 +239,7 @@ function Action_():void{
         LogEvent('MyId');
         Send($Server['message']['from']['id'], sprintf(Lang_YourId, $Server['message']['from']['id']));
       elseif(ChatFlowEnable):
-        require(__DIR__ . '/chatflow.php');
+        require(__DIR__ . '/chatflow/chatflow.php');
       else:
         Unknow();
       endif;
