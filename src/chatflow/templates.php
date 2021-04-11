@@ -1,5 +1,5 @@
 <?php
-//2021.04.11.01
+//2021.04.11.02
 
 function TmpBtnYesNo():array{
   return [
@@ -16,11 +16,17 @@ function TmpBtnRemove():array{
 }
 
 function TmpUsersInWaitList(int $User):void{
-  Send($User, sprintf(Lang_ChatFlow_UsersInWaitList, WaitListCount(), Lang_ChatFlow_Cmd_Next), [
-    'one_time_keyboard' => true,
-    'resize_keyboard' => true,
-    'keyboard'=>[
-      [Lang_ChatFlow_Cmd_Next]
-    ]
-  ]);
+  $count = WaitListCount();
+  if($count === 0):
+    $kb = null;
+  else:
+    $kb = [
+      'one_time_keyboard' => true,
+      'resize_keyboard' => true,
+      'keyboard'=>[
+        [Lang_ChatFlow_Cmd_Next]
+      ]
+    ];
+  endif;
+  Send($User, sprintf(Lang_ChatFlow_UsersInWaitList, $count, Lang_ChatFlow_Cmd_Next), $kb);
 }
