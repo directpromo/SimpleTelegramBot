@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.05
+//2021.04.11.00
 
 const ChatFlowStatus_WaitingResponse = '0';
 const ChatFlowStatus_Chatting = '1';
@@ -58,33 +58,9 @@ function CheckTimes():void{
 }
 
 ChatFlowLoad();
-if($argc > 1 and $argv[1] === '-CheckTimes'):
-  CheckTimes();
-elseif(ChatFlowGet($Server['message']['from']['id'], 'status') === false):
-  Send($Server['message']['chat']['id'], Lang_WantAttendant, [
-    'one_time_keyboard' => true,
-    'resize_keyboard' => true,
-    'keyboard'=>[
-        [Lang_No, Lang_Yes]
-      ]
-    ]
-  );
-  ChatFlowSet($Server['message']['from']['id'], 'status', ChatFlowStatus_WaitingResponse);
-elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == ChatFlowStatus_WaitingResponse):
-  if(Equals($Text, Lang_Yes)):
-    $Attendant = GetAnAttendant();
-
-    Send($Server['message']['from']['id'], Lang_WaitForAttender, ['remove_keyboard' => true]);
-    ChatFlowSet($Server['message']['from']['id'], 'status', ChatFlowStatus_Chatting);
-    ChatFlowSet($Server['message']['from']['id'], 'with', $Attendant);
-
-    Send($Attendant, sprintf(Lang_WantToChat, $Server['message']['from']['first_name'], Lang_EndChat));
-    ChatFlowSet($Attendant, 'status', ChatFlowStatus_Chatting);
-    ChatFlowSet($Attendant, 'with', $Server['message']['from']['id']);
-  elseif(Equals($Text, Lang_No)):
-    Send($Server['message']['from']['id'], Lang_DontWaitForAttender, ['remove_keyboard' => true]);
-    ChatFlowDel($Server['message']['from']['id']);
-  else:
+CheckTimes(); //Check the times in each message, case cron are not set
+if(isset($Server['message'])):
+  if(ChatFlowGet($Server['message']['from']['id'], 'status') === false):
     Send($Server['message']['chat']['id'], Lang_WantAttendant, [
       'one_time_keyboard' => true,
       'resize_keyboard' => true,
@@ -93,17 +69,42 @@ elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == ChatFlowStatus
         ]
       ]
     );
-  endif;
-elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == ChatFlowStatus_Chatting):
-  if(Equals($Text, Lang_EndChat)):
-    $with = ChatFlowGet($Server['message']['from']['id'], 'with');
-    Send($Server['message']['from']['id'], Lang_ChatEnded);
-    Send($with, Lang_ChatEnded);
-    ChatFlowDel($Server['message']['from']['id']);
-    ChatFlowDel($with);
-  else:
-    Send(ChatFlowGet($Server['message']['from']['id'], 'with'), $Text);
-    ChatFlowSet($Server['message']['from']['id'], 'time', '');
+    ChatFlowSet($Server['message']['from']['id'], 'status', ChatFlowStatus_WaitingResponse);
+  elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == ChatFlowStatus_WaitingResponse):
+    if(Equals($Text, Lang_Yes)):
+      $Attendant = GetAnAttendant();
+
+      Send($Server['message']['from']['id'], Lang_WaitForAttender, ['remove_keyboard' => true]);
+      ChatFlowSet($Server['message']['from']['id'], 'status', ChatFlowStatus_Chatting);
+      ChatFlowSet($Server['message']['from']['id'], 'with', $Attendant);
+
+      Send($Attendant, sprintf(Lang_WantToChat, $Server['message']['from']['first_name'], Lang_EndChat));
+      ChatFlowSet($Attendant, 'status', ChatFlowStatus_Chatting);
+      ChatFlowSet($Attendant, 'with', $Server['message']['from']['id']);
+    elseif(Equals($Text, Lang_No)):
+      Send($Server['message']['from']['id'], Lang_DontWaitForAttender, ['remove_keyboard' => true]);
+      ChatFlowDel($Server['message']['from']['id']);
+    else:
+      Send($Server['message']['chat']['id'], Lang_WantAttendant, [
+        'one_time_keyboard' => true,
+        'resize_keyboard' => true,
+        'keyboard'=>[
+            [Lang_No, Lang_Yes]
+          ]
+        ]
+      );
+    endif;
+  elseif(ChatFlowGet($Server['message']['from']['id'], 'status') == ChatFlowStatus_Chatting):
+    if(Equals($Text, Lang_EndChat)):
+      $with = ChatFlowGet($Server['message']['from']['id'], 'with');
+      Send($Server['message']['from']['id'], Lang_ChatEnded);
+      Send($with, Lang_ChatEnded);
+      ChatFlowDel($Server['message']['from']['id']);
+      ChatFlowDel($with);
+    else:
+      Send(ChatFlowGet($Server['message']['from']['id'], 'with'), $Text);
+      ChatFlowSet($Server['message']['from']['id'], 'time', '');
+    endif;
   endif;
 endif;
 ChatFlowSave();

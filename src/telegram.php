@@ -1,5 +1,5 @@
 <?php
-//2021.04.10.03
+//2021.04.11.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -201,10 +201,11 @@ function Action_HookSet():void{
 }
 
 function Action_():void{
-  global $Server, $argc, $argv;
+  global $Server, $argv;
   $Server = file_get_contents('php://input');
   $Server = json_decode($Server, true);
-  if($argc > 1):
+  $argv ??= [];
+  if(array_search('-CheckTimes', $argv) !== false):
     require(__DIR__ . '/chatflow.php');
   elseif(isset($Server['message'])):
     if((isset($Server['message']['document']) or isset($Server['message']['photo'])) and IsAdmin($Server['message']['from']['id'])):
