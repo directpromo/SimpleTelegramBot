@@ -8,9 +8,9 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f  src/commands/chatflow.json
 8c53993e2887f09d9e5b0bd5c03369e2e8e49d11  src/commands/unknow.txt
 bc60beaa84adf56da609b54f210deca249bd6710  src/config.php
 8fb7ab2d0d01dba10fadad78e369c5b2c3bb9f7e  src/language/ptbr.php
-bf09691b146b24791720c6b26e8668babfdafc1f  src/language/ptbr_chatflow.php
+c2290f1d4283e5cdd8d788da586429025345305d  src/language/ptbr_chatflow.php
 4f80901fb920cda8bc362dd151a2e750d6332dd0  src/language/us.php
-181ada316fb606a9cdbf5f13f21e296c969b3a3e  src/language/us_chatflow.php
+577b6b058d9ea002c4ae75a0bf05e95b87b8cade  src/language/us_chatflow.php
 da39a3ee5e6b4b0d3255bfef95601890afd80709  src/modules/index.htm
 edd07e9a17bc60f2c7b867f9e3a22014c9ceb219  src/stats.php
 79809725192d8f7c1fbbe8d0f7215d47867b03cb  src/telegram.php
